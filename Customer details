@@ -1,0 +1,47 @@
+CREATE TABLE Customer_details (
+  CustomerID int PRIMARY KEY,  
+  age int,
+  gender varchar(10),
+  Purchase_Date date,  
+  Product_ID int,  -- 
+  FOREIGN KEY (Product_ID) 
+  Purchased_Amount int,
+  Location varchar(30),
+  Size varchar(5),  
+  Color varchar(5),  
+  Season varchar(20),  
+  Review_Rating int,
+  Subscription_Status varchar(10),
+  Shipping_Type varchar(30),
+  Discount_Applied varchar(10),
+  Promo_Code varchar(10),
+  Previous_Purchases int,
+  Payment_Method varchar(30),
+  Frequency_Purchases int 
+);
+
+-- total count of male and females by age and gender
+
+select gender, age, count(gender)  
+ from customer_details 
+group by gender,age;
+
+
+-- total number of Male and Female buying clothing
+SELECT age_group, item_purchased, category, gender, COUNT(*) AS purchase_count
+FROM (
+  SELECT CustomerID, age,
+         CASE
+           WHEN age BETWEEN 18 AND 24 THEN '18-24'
+           WHEN age BETWEEN 25 AND 34 THEN '25-34'
+           WHEN age BETWEEN 35 AND 44 THEN '35-44'
+           WHEN age BETWEEN 45 AND 54 THEN '45-54'  -- Added new age group
+           WHEN age BETWEEN 55 AND 64 THEN '55-64'  -- Added new age group
+           ELSE '65+'
+         END AS age_group,
+         item_purchased,
+         category, gender
+  FROM Customer_details
+) AS age_grouped
+GROUP BY age_group, item_purchased, category,gender
+ORDER BY purchase_count DESC;
