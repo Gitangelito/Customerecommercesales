@@ -20,28 +20,75 @@ CREATE TABLE Customer_details (
   Frequency_Purchases int 
 );
 
+
+
 -- total count of male and females by age and gender
 
 select gender, age, count(gender)  
  from customer_details 
 group by gender,age;
 
+-- Total count of gender male and female
+select gender, count(gender)  
+from customer_details 
+group by gender;
 
--- total number of Male and Female buying clothing
-SELECT age_group, item_purchased, category, gender, COUNT(*) AS purchase_count
+
+-- Define min and max age
+select gender, min(age), max(age)
+ from Customer_details
+ group by gender;
+
+
+-- Explore purchase trends by gender
+SELECT gender, item_purchased, category, COUNT(*) AS purchase_count
+FROM Customer_details
+GROUP BY gender, item_purchased, category
+ORDER BY purchase_count DESC;
+
+
+
+-- total number of Female buying clothing. Change to 'Male' to obtain results.
+
+SELECT age_group, item_purchased, category, COUNT(*) AS purchase_count
 FROM (
   SELECT CustomerID, age,
-         CASE
-           WHEN age BETWEEN 18 AND 24 THEN '18-24'
-           WHEN age BETWEEN 25 AND 34 THEN '25-34'
-           WHEN age BETWEEN 35 AND 44 THEN '35-44'
-           WHEN age BETWEEN 45 AND 54 THEN '45-54'  -- Added new age group
-           WHEN age BETWEEN 55 AND 64 THEN '55-64'  -- Added new age group
-           ELSE '65+'
-         END AS age_group,
-         item_purchased,
-         category, gender
+    CASE
+      WHEN age BETWEEN 18 AND 24 THEN '18-24'
+      WHEN age BETWEEN 25 AND 34 THEN '25-34'
+      WHEN age BETWEEN 35 AND 44 THEN '35-44'
+      WHEN age BETWEEN 45 AND 54 THEN '45-54'
+      WHEN age BETWEEN 55 AND 64 THEN '55-64'
+      ELSE '65+'
+    END AS age_group,
+    item_purchased,
+    category,
+    gender
   FROM Customer_details
+  WHERE Gender = 'Female'  -- Filter for Male only
 ) AS age_grouped
 GROUP BY age_group, item_purchased, category,gender
-ORDER BY purchase_count DESC;
+order by age_group;
+
+
+
+
+-- total number of transfers made by different ages groups within 18 to 70
+SELECT age_group, payment_method, COUNT(*) AS purchase_count
+FROM (
+  SELECT CustomerID, age,
+    CASE
+      WHEN age BETWEEN 18 AND 24 THEN '18-24'
+      WHEN age BETWEEN 25 AND 34 THEN '25-34'
+      WHEN age BETWEEN 35 AND 44 THEN '35-44'
+      WHEN age BETWEEN 45 AND 54 THEN '45-54'
+      WHEN age BETWEEN 55 AND 64 THEN '55-64'
+      ELSE '65+'
+    END AS age_group,
+    payment_method,
+    gender
+  FROM Customer_details
+  WHERE Gender = 'Male'  -- Filter for Male only
+) AS age_grouped
+GROUP BY age_group, payment_method,gender
+order by age_group;
