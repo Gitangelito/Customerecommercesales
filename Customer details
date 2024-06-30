@@ -92,3 +92,16 @@ FROM (
 ) AS age_grouped
 GROUP BY age_group, payment_method,gender
 order by age_group;
+
+
+-- impact of promotions and discounts
+SELECT Discount_Applied, Promo_Code, COUNT(*) AS purchase_count, AVG(Purchased_Amount) AS average_purchase
+FROM Customer_details
+GROUP BY Discount_Applied, Promo_Code
+ORDER BY purchase_count DESC;
+
+-- Analyze customer behavior based on subscription status:
+SELECT Subscription_Status, COUNT(*) AS customer_count, AVG(Purchased_Amount) AS average_purchase
+FROM Customer_details
+GROUP BY Subscription_Status;
+
